@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+  service:
+    image: "$name;format="norm"$/$name;format="norm"$:latest"
+    environment:
+      CASSANDRA_JOURNAL_HOST: "cassandra"
+      CASSANDRA_SNAPSHOT_STORE_HOST: "cassandra"
+      JSON_WEB_TOKEN_SECRET: "c2VjcmV0Cg=="
+    ports:
+      - 8080:8080
+
+  cassandra:
+    image: "cassandra:3.7"
