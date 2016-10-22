@@ -13,7 +13,7 @@ lazy val root = Project("$name;format="norm"$", file("."))
       Resolver.bintrayRepo("choffmeister", "maven")
     ),
     libraryDependencies ++= Seq(
-      "de.choffmeister" %% "microservice-utils" % "0.0.7",
+      "de.choffmeister" %% "microservice-utils" % "0.0.8",
       "ch.qos.logback" % "logback-classic" % "1.1.7",
       "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.3.6-RC2" % "test",
       "com.github.romix.akka" %% "akka-kryo-serialization" % "0.4.1",
