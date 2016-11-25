@@ -1,4 +1,5 @@
-val akkaVersion = "2.4.9"
+val akkaVersion = "2.4.14"
+val akkaHttpVersion = "10.0.0"
 
 lazy val root = Project("$name;format="norm"$", file("."))
   .settings(
@@ -13,20 +14,17 @@ lazy val root = Project("$name;format="norm"$", file("."))
       Resolver.bintrayRepo("choffmeister", "maven")
     ),
     libraryDependencies ++= Seq(
-      "de.choffmeister" %% "microservice-utils" % "0.0.8",
+      "de.choffmeister" %% "microservice-utils" % "0.1.0",
       "ch.qos.logback" % "logback-classic" % "1.1.7",
-      "com.github.dnvriend" %% "akka-persistence-inmemory" % "1.3.6-RC2" % "test",
       "com.github.romix.akka" %% "akka-kryo-serialization" % "0.4.1",
       "com.typesafe.akka" %% "akka-actor" % akkaVersion,
       "com.typesafe.akka" %% "akka-cluster-sharding" % akkaVersion,
       "com.typesafe.akka" %% "akka-cluster-tools" % akkaVersion,
       "com.typesafe.akka" %% "akka-cluster" % akkaVersion,
-      "com.typesafe.akka" %% "akka-http-core" % akkaVersion,
-      "com.typesafe.akka" %% "akka-http-experimental" % akkaVersion,
-      "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaVersion,
-      "com.typesafe.akka" %% "akka-http-testkit" % akkaVersion % "test",
-      "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.17",
-      "com.typesafe.akka" %% "akka-persistence" % akkaVersion,
+      "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
+      "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+      "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+      "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % "test",
       "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",

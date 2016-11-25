@@ -9,26 +9,32 @@ import akka.http.scaladsl.server.Route
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import de.choffmeister.microserviceutils.json._
+import de.choffmeister.microserviceutils.ShutdownDelay
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
 class HttpServer(greeter: ActorRef)(implicit val system: ActorSystem) extends JsonProtocol {
-  val routes = pathPrefix("api") {
-    pathEnd {
-      complete(HttpServer.jsonHome)
+  val routes =
+    path("_health") {
+      if (!ShutdownDelay.isShuttingDown.isCompleted) complete(StatusCodes.OK, "Ok")
+      else complete(StatusCodes.InternalServerError, "Shutting down")
     } ~
-    path("greet") {
-      post {
-        entity(as[Name]) { name =>
-          askActor(greeter, name) {
-            case greeting: Greeting => complete(greeting)
+    pathPrefix("api") {
+      pathEnd {
+        complete(HttpServer.jsonHome)
+      } ~
+      path("greet") {
+        post {
+          entity(as[Name]) { name =>
+            askActor(greeter, name) {
+              case greeting: Greeting => complete(greeting)
+            }
           }
         }
       }
     }
-  }
 
   def askActor(actorRef: ActorRef, request: Any)(handle: PartialFunction[Any, Route]): Route = {
     onSuccess(actorRef.ask(request)(1.minute)) {
