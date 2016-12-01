@@ -20,11 +20,7 @@ object DockerBuild {
     daemonUser in Docker := "root",
     daemonGroup in Docker := "root",
 
-    dockerCommands ~= (_.filterNot {
-      case Cmd("USER", args @ _*) => true
-      case ExecCmd("RUN", args @ _*) => args.contains("chown")
-      case cmd => false
-    }),
+    dockerCommands += Cmd("HEALTHCHECK --interval=5s --timeout=1s --retries=3 CMD curl --fail localhost:8080/_health || exit 1"),
 
     bashScriptExtraDefines ++= Seq(
       """addJava "-Dapp.home=\${app_home}/.."""",
