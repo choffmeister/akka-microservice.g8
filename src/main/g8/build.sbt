@@ -32,7 +32,6 @@ lazy val root = Project("$name;format="norm"$", file("."))
       "commons-codec" % "commons-codec" % "1.10",
       "io.spray" %% "spray-json" % "1.3.2",
       "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
-      "org.apache.commons" % "commons-email" % "1.4",
       "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.6.2",
       "org.scalatest" %% "scalatest" % "3.0.0" % "test"
     )
