@@ -8,19 +8,16 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
+import de.choffmeister.microserviceutils.http.HttpServerBase
 import de.choffmeister.microserviceutils.json._
-import de.choffmeister.microserviceutils.ShutdownDelay
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
-class HttpServer(greeter: ActorRef)(implicit val system: ActorSystem) extends JsonProtocol {
-  val routes =
-    path("_health") {
-      if (!ShutdownDelay.isShuttingDown.isCompleted) complete(StatusCodes.OK, "Ok")
-      else complete(StatusCodes.InternalServerError, "Shutting down")
-    } ~
+class HttpServer(greeter: ActorRef)(override implicit val system: ActorSystem, implicit val executor: ExecutionContext) extends HttpServerBase with JsonProtocol {
+  override def home = HttpServer.jsonHome
+  override def routes =
     pathPrefix("api") {
       pathEnd {
         complete(HttpServer.jsonHome)
@@ -43,20 +40,6 @@ class HttpServer(greeter: ActorRef)(implicit val system: ActorSystem) extends Js
       case response =>
         system.log.error("Received unexpected response '{}' after sending message '{}' to '{}'", response, request, actorRef)
         complete(StatusCodes.InternalServerError)
-    }
-  }
-
-  def bind(): Future[ServerBinding] = {
-    val httpConfig = system.settings.config.getConfig("http")
-    val interface = httpConfig.getString("interface")
-    val port = httpConfig.getInt("port")
-
-    implicit val executor = system.dispatcher
-    implicit val materializer = ActorMaterializer()
-
-    Http().bindAndHandle(routes, interface, port).andThen {
-      case Success(bind) => system.log.info(s"Started HTTP server on {}", bind.localAddress)
-      case Failure(err) => system.log.error("Could not start HTTP server", err)
     }
   }
 }
